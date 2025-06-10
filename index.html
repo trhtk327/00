@@ -10,11 +10,11 @@
       color: #eee;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
-      padding: 20px;
+      padding: 40px 20px;
       text-align: center;
     }
     h1 {
@@ -31,18 +31,58 @@
       text-decoration: none;
       font-weight: bold;
       font-size: 1.2rem;
+      display: block;
+      margin: 8px 0;
     }
     a:hover {
       text-decoration: underline;
+    }
+    #links {
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
   <h1>כתובת האתר עדיין לא קיימת</h1>
   <p>אם יש בעיה תפנה לאריאל מאירי</p>
-  <p>ואם תרצה, יש פה קישור לאתר הרשמי של אריאל מאירי:</p>
-  <a href="https://sites.google.com/view/tr-vecmho-ak-trhtk/%D7%91%D7%99%D7%AA?authuser=0" target="_blank" rel="noopener noreferrer">
-    אתר רשמי של אריאל מאירי
+  <p>ואם תרצה, יש פה קישור לאתר הרשמי ועוד דברים מאת אריאל מאירי:</p>
+
   </a>
+
+  <div id="links">
+    <h2 style="margin-top: 50px; color: #00c6ff;">קישורים נוספים מהגיליון</h2>
+    <p>טוען קישורים...</p>
+  </div>
+
+  <script>
+    const sheetUrl = "https://opensheet.elk.sh/1QqFk7ppnMpPxXM2aHLeV00Dq4z4nh0TPBX4tpr13Fp4/Sheet1";
+
+    fetch(sheetUrl)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("links");
+        container.innerHTML = '<h2 style="color: #00c6ff;">קישורים נוספים מהגיליון</h2>';
+        let found = false;
+        data.forEach(row => {
+          const title = row["שם"] || row["Name"] || Object.values(row)[0];
+          const url = row["קישור"] || row["URL"] || Object.values(row)[1];
+          if (title && url) {
+            found = true;
+            const a = document.createElement("a");
+            a.href = url.trim();
+            a.textContent = title.trim();
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            container.appendChild(a);
+          }
+        });
+        if (!found) {
+          container.innerHTML += "<p>לא נמצאו קישורים תקינים בגיליון.</p>";
+        }
+      })
+      .catch(() => {
+        document.getElementById("links").innerHTML += "<p>שגיאה בטעינת הקישורים.</p>";
+      });
+  </script>
 </body>
 </html>
